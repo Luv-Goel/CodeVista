@@ -75,12 +75,16 @@ export class CodeAnalyzer {
         path: file.path,
         language,
         lines: { start: 1, end: 1 }, // TODO: compute total lines
+        imports: [],
+        exports: [],
       };
       nodes.push(fileNode);
       fileNodeMap.set(file.path, fileNode);
     }
 
-    // Step 3: Parse AST for supported files and create symbol nodes
+    // Step 3: Parse AST for supported files and create symbol nodes + import/export edges
+    const moduleNodeMap = new Map<string, string>(); // specifier -> nodeId
+
     for (const file of files) {
       const language = this.detectLanguage(file.extension);
       if (!['typescript', 'javascript'].includes(language)) {
@@ -93,6 +97,7 @@ export class CodeAnalyzer {
         const fileNode = fileNodeMap.get(file.path)!;
 
         for (const node of ast.body) {
+          // Function declarations
           if (node.type === 'FunctionDeclaration' && node.id) {
             const symbolId = `${fileNode.id}:func:${node.id.name}:${node.loc!.start.line}`;
             const symbolNode: CodeNode = {
@@ -105,7 +110,9 @@ export class CodeAnalyzer {
             };
             nodes.push(symbolNode);
             edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
-          } else if (node.type === 'ClassDeclaration' && node.id) {
+          }
+          // Class declarations
+          else if (node.type === 'ClassDeclaration' && node.id) {
             const symbolId = `${fileNode.id}:class:${node.id.name}:${node.loc!.start.line}`;
             const symbolNode: CodeNode = {
               id: symbolId,
@@ -118,7 +125,59 @@ export class CodeAnalyzer {
             nodes.push(symbolNode);
             edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
           }
-          // TODO: handle methods, interfaces, etc.
+          // Import declarations
+          else if (node.type === 'ImportDeclaration') {
+            const specifier = node.source.value;
+            // Record import in file node
+            fileNode.imports!.push(specifier);
+
+            // Create or get module node for this specifier
+            let moduleId = moduleNodeMap.get(specifier);
+            if (!moduleId) {
+              moduleId = `module:${specifier}`; // simple ID
+              const moduleNode: CodeNode = {
+                id: moduleId,
+                name: specifier,
+                type: 'module',
+                path: specifier,
+                language: 'javascript',
+                lines: { start: 0, end: 0 },
+                imports: [],
+                exports: [],
+              };
+              nodes.push(moduleNode);
+              moduleNodeMap.set(specifier, moduleId);
+            }
+
+            // Create edge from file to module
+            edges.push({ source: fileNode.id, target: moduleId, type: 'imports' });
+          }
+          // Export named declarations
+          else if (node.type === 'ExportNamedDeclaration') {
+            // Collect exported names
+            if (node.specifiers && node.specifiers.length > 0) {
+              for (const spec of node.specifiers) {
+                const name =
+                  spec.exported.type === 'Identifier'
+                    ? spec.exported.name
+                    : String(spec.exported);
+                fileNode.exports!.push(name);
+              }
+            } else if (node.declaration) {
+              // Export a declaration (e.g., export const foo = ...)
+              // For now, we could record the declaration's id name if it's a function/class later via symbol nodes.
+              // We can skip for now.
+            }
+            // Re-export from another module (export { foo } from 'module')
+            // TODO: handle dependencies from re-exports
+          }
+          // Export all declarations (export * from 'module')
+          else if (node.type === 'ExportAllDeclaration') {
+            fileNode.exports!.push('*');
+            if (node.source) {
+              // Could also consider as dependency but skip for now.
+            }
+          }
         }
       } catch (err) {
         console.warn(`Failed to parse ${file.path}:`, err);

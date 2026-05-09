@@ -11,7 +11,7 @@
 - **Star Count:** 0
 - **Phase:** 2 - Code Parsing & Analysis
 - **Last Update:** 2026-05-10
-- **Next Milestone:** Build CodeNode tree with parent-child relationships
+- **Next Milestone:** Extract imports/exports to create edges
 
 ---
 
@@ -40,7 +40,7 @@
   - [x] Build and verify
 - [x] Language detection by extension
 - [x] AST parser for TypeScript/JavaScript (using @babel/parser)
-- [ ] Build CodeNode tree with parent-child relationships
+- [x] Build CodeNode tree with parent-child relationships
 - [ ] Extract imports/exports to create edges
 - [ ] Compute basic metrics (LOC, complexity estimate)
 - [ ] Cache parsed results in SQLite
@@ -95,6 +95,7 @@
 | 2026-05-10 | cab5844 | Add basic node icons by type | 0 |
 | 2026-05-10 | 117c2a6 | Add language detection by extension | 0 |
 | 2026-05-10 | 4166b72 | Add AST parser using @babel/parser | 0 |
+| 2026-05-10 | 1c75519 | Build CodeNode tree by parsing AST | 0 |
 | 2026-05-10 | 117c2a6 | Add file system walker with glob pattern support | 0 |
 
 ---
