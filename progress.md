@@ -34,6 +34,10 @@
 
 ### Phase 2: Code Parsing & Analysis
 - [ ] File system walker with glob patterns
+  - [ ] Create fileWalker service (src/services/fileWalker.ts)
+  - [ ] Integrate fileWalker into CodeAnalyzer
+  - [ ] Add basic tests
+  - [ ] Build and verify
 - [ ] Language detection by extension
 - [ ] AST parser for TypeScript/JavaScript (using @typescript-eslint/parser or tree-sitter)
 - [ ] Build CodeNode tree with parent-child relationships
@@ -88,7 +92,7 @@
 | 2026-05-10 | 4c3a9c8 | Initial commit - project scaffold | 0 |
 | 2026-05-10 | ed38af6 | feat: D3 force simulation with interactive nodes | 0 |
 | 2026-05-10 | 45e20f6 | feat: add zoom and pan controls for visualization canvas | 0 |
-| 2026-05-10 | d1009e5 | Add basic node icons by type | 0 |
+| 2026-05-10 | cab5844 | Add basic node icons by type | 0 |
 
 ---
 
