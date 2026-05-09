@@ -2,6 +2,7 @@ import { CodeNode, GraphEdge, VisualGraph, ProjectInfo } from '../types';
 import path from 'path';
 import { FileWalker } from './fileWalker';
 import { promises as fs } from 'fs';
+import { parseCode } from './astParser';
 
 // Common code file patterns
 const DEFAULT_INCLUDE_PATTERNS = [
@@ -63,27 +64,66 @@ export class CodeAnalyzer {
 
     console.log(`Found ${files.length} files to analyze`);
 
-    // Step 2: Build basic file nodes (placeholder for AST parsing)
+    // Step 2: Build file nodes and store in map
+    const fileNodeMap = new Map<string, CodeNode>();
     for (const file of files) {
       const language = this.detectLanguage(file.extension);
-
-      const node: CodeNode = {
+      const fileNode: CodeNode = {
         id: this.generateNodeId(file.path),
         name: path.basename(file.path),
         type: 'file',
         path: file.path,
         language,
-        lines: {
-          start: 1,
-          end: 1, // Will be filled by parser later
-        },
+        lines: { start: 1, end: 1 }, // TODO: compute total lines
       };
-
-      nodes.push(node);
+      nodes.push(fileNode);
+      fileNodeMap.set(file.path, fileNode);
     }
 
-    // Step 3: Build basic folder hierarchy (optional, can be expanded)
-    // For now, we just return file nodes. AST parsing and edge building will come later.
+    // Step 3: Parse AST for supported files and create symbol nodes
+    for (const file of files) {
+      const language = this.detectLanguage(file.extension);
+      if (!['typescript', 'javascript'].includes(language)) {
+        continue;
+      }
+
+      try {
+        const content = await fs.readFile(file.path, 'utf-8');
+        const { ast } = parseCode(content, file.path);
+        const fileNode = fileNodeMap.get(file.path)!;
+
+        for (const node of ast.body) {
+          if (node.type === 'FunctionDeclaration' && node.id) {
+            const symbolId = `${fileNode.id}:func:${node.id.name}:${node.loc!.start.line}`;
+            const symbolNode: CodeNode = {
+              id: symbolId,
+              name: node.id.name,
+              type: 'function',
+              path: file.path,
+              language,
+              lines: { start: node.loc!.start.line, end: node.loc!.end.line },
+            };
+            nodes.push(symbolNode);
+            edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
+          } else if (node.type === 'ClassDeclaration' && node.id) {
+            const symbolId = `${fileNode.id}:class:${node.id.name}:${node.loc!.start.line}`;
+            const symbolNode: CodeNode = {
+              id: symbolId,
+              name: node.id.name,
+              type: 'class',
+              path: file.path,
+              language,
+              lines: { start: node.loc!.start.line, end: node.loc!.end.line },
+            };
+            nodes.push(symbolNode);
+            edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
+          }
+          // TODO: handle methods, interfaces, etc.
+        }
+      } catch (err) {
+        console.warn(`Failed to parse ${file.path}:`, err);
+      }
+    }
 
     return {
       nodes,
@@ -92,10 +132,11 @@ export class CodeAnalyzer {
         projectName: 'CodeVista',
         totalFiles: nodes.length,
         analyzedAt: new Date().toISOString(),
-        analyzerVersion: '0.0.2',
+        analyzerVersion: '0.0.3',
       },
     };
   }
+
 
   private detectLanguage(extension?: string): string {
     const langMap: Record<string, string> = {
