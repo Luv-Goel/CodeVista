@@ -2,14 +2,6 @@ import { CodeNode, GraphEdge, VisualGraph, ProjectInfo } from '../types';
 
 export class CodeAnalyzer {
   private projectPath: string;
-  private excludePatterns: string[] = [
-    'node_modules',
-    'dist',
-    'build',
-    '.git',
-    'coverage',
-    '*.log',
-  ];
 
   constructor(projectPath: string) {
     this.projectPath = projectPath;
@@ -54,14 +46,6 @@ export class CodeAnalyzer {
     };
   }
 
-  private shouldExclude(path: string): boolean {
-    return this.excludePatterns.some(pattern => {
-      if (pattern.startsWith('*')) {
-        return path.endsWith(pattern.slice(1));
-      }
-      return path.includes(pattern);
-    });
-  }
 }
 
 export const createAnalyzer = (projectPath: string) => new CodeAnalyzer(projectPath);

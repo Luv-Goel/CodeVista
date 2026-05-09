@@ -1,6 +1,5 @@
 import React from 'react';
 import { useCodeStore } from '../stores/codeStore';
-import { CodeNode } from '../types';
 import './NodeInspector.css';
 
 export const NodeInspector: React.FC = () => {

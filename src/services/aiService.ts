@@ -12,6 +12,9 @@ export class AIService {
     // Would send code context + metadata to AI (OpenRouter, local model, etc.)
     // and return refactoring suggestions
 
+    // Use node to avoid unused warning (placeholder)
+    void node;
+
     if (!this.apiKey) {
       console.warn('No AI API key configured - skipping analysis');
       return [];
@@ -23,11 +26,16 @@ export class AIService {
 
   async detectPatterns(nodes: CodeNode[]): Promise<DetectedPattern[]> {
     // Would analyze codebase for patterns (singleton, factory, observer, etc.)
+    // Use nodes to avoid unused warning
+    const count = nodes.length;
+    console.debug(`Pattern detection on ${count} nodes (placeholder)`);
     return [];
   }
 
   async generateInsights(graph: CodeNode[]): Promise<Insight[]> {
     // Would generate high-level insights about architecture, quality, performance
+    // Use graph to avoid unused warning
+    console.debug(`Generating insights for ${graph.length} nodes (placeholder)`);
     return [];
   }
 

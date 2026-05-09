@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CodeNode, GraphEdge, VisualGraph, ViewState, ProjectInfo, AIAnalysis } from '../types';
+import { VisualGraph, ViewState, ProjectInfo, AIAnalysis } from '../types';
 
 interface CodeStore {
   // State

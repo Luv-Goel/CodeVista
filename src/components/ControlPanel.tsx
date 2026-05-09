@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCodeStore } from '../stores/codeStore';
+import { ViewState } from '../types';
 import './ControlPanel.css';
 
 export const ControlPanel: React.FC = () => {
