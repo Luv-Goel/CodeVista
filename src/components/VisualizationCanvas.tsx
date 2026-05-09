@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import { VisualGraph, ViewState, CodeNode, GraphEdge } from '../types';
+import { useCodeStore } from '../stores/codeStore';
 import './VisualizationCanvas.css';
 
 interface Props {
@@ -18,6 +19,64 @@ export const VisualizationCanvas: React.FC<Props> = ({
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const simulationRef = useRef<d3.Simulation<CodeNode, GraphEdge> | null>(null);
+  const { updateZoom, pan } = useCodeStore();
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(null);
+
+  // Handle mouse wheel for zoom
+  const handleWheel = useCallback((e: React.WheelEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    const zoomFactor = 0.1;
+    const delta = -e.deltaY;
+    const zoomChange = delta > 0 ? (1 + zoomFactor) : (1 - zoomFactor);
+    const newZoom = Math.max(0.1, Math.min(5, viewState.zoom * zoomChange));
+
+    if (newZoom === viewState.zoom) return;
+
+    // Calculate mouse position relative to SVG
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Convert to world coordinates before zoom
+    const worldX = (mouseX - viewState.pan.x) / viewState.zoom;
+    const worldY = (mouseY - viewState.pan.y) / viewState.zoom;
+
+    // Apply new zoom
+    updateZoom(newZoom);
+
+    // Adjust pan to keep world point under cursor
+    const newPanX = mouseX - worldX * newZoom;
+    const newPanY = mouseY - worldY * newZoom;
+    pan(newPanX - viewState.pan.x, newPanY - viewState.pan.y);
+  }, [viewState.zoom, viewState.pan.x, viewState.pan.y, updateZoom, pan]);
+
+  // Handle mouse down for panning
+  const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    // Only start panning if clicking on the SVG background (not on nodes)
+    if ((e.target as SVGElement).tagName === 'svg') {
+      setIsPanning(true);
+      setPanStart({ x: e.clientX, y: e.clientY });
+    }
+  }, []);
+
+  // Handle mouse move for panning
+  const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    if (isPanning && panStart) {
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      pan(dx, dy);
+      setPanStart({ x: e.clientX, y: e.clientY });
+    }
+  }, [isPanning, panStart, pan]);
+
+  // Handle mouse up to stop panning
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false);
+    setPanStart(null);
+  }, []);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -176,6 +235,11 @@ export const VisualizationCanvas: React.FC<Props> = ({
       viewBox="0 0 800 600"
       preserveAspectRatio="xMidYMid meet"
       onClick={handleSvgClick}
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
     >
       <defs>
         <marker

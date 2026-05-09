@@ -10,8 +10,8 @@
 
 - **Star Count:** 0
 - **Phase:** 1 - Core Visualization Engine
-- **Last Update:** Initial commit
-- **Next Milestone:** D3.js force-directed graph with interactive nodes
+- **Last Update:** 2026-05-10
+- **Next Milestone:** Add zoom/pan controls and basic node icons
 
 ---
 
@@ -21,11 +21,11 @@
 - [x] Project scaffold (React + TypeScript + Vite)
 - [x] Basic component structure (Visualizer, ControlPanel, Inspector)
 - [x] Zustand store for state management
-- [ ] Implement D3.js force simulation
-- [ ] Render nodes as interactive SVG elements
+- [x] Implement D3.js force simulation
+- [x] Render nodes as interactive SVG elements
 - [ ] Add zoom/pan controls (mouse wheel, drag)
-- [ ] Node selection & hover effects
-- [ ] Edge rendering with arrowheads
+- [x] Node selection & hover effects
+- [x] Edge rendering with arrowheads
 - [ ] Basic node icons by type
 
 **Deliverable:** Interactive graph that can display any set of nodes/edges
@@ -86,7 +86,7 @@
 | Date | Commit | Summary | Stars |
 |------|--------|---------|-------|
 | 2026-05-10 | 4c3a9c8 | Initial commit - project scaffold | 0 |
-| - | - | - | - |
+| 2026-05-10 | ed38af6 | feat: D3 force simulation with interactive nodes | 0 |
 
 ---
 
