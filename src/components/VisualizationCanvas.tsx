@@ -137,13 +137,53 @@ export const VisualizationCanvas: React.FC<Props> = ({
 
     const allLinks = linkEnter.merge(linkSelection);
 
-    // Render nodes
-    const nodeSelection = graphGroup.selectAll<SVGCircleElement, CodeNode>('.node')
+    // Shape mapping for different node types (basic icons)
+    const shapeSize = 10;
+
+    const getNodeShape = (type: string): string => {
+      // Returns SVG path data for each node type
+      const r = shapeSize;
+      switch (type) {
+        case 'file':
+          // Document icon (rectangle with folded corner)
+          return `M ${-r} ${-r} h ${r * 2} v ${r * 1.5} h ${-r * 2} z M ${r} ${-r} l ${r * 0.6} ${r * 0.6} l ${-r * 0.6} ${r * 0.4} z`;
+        case 'folder':
+          // Folder icon
+          return `M ${-r} ${r * 0.3} h ${r * 2} v ${r * 1.4} l ${-r * 1.4} ${r * 0.8} l ${-r * 0.6} ${-r * 0.8} z`;
+        case 'function':
+          // Lambda/f symbol (diamond-ish)
+          return `M 0 ${-r} l ${r} 0 l 0 ${r} l ${-r} 0 z M ${-r * 0.4} ${-r * 0.4} l ${r * 0.8} 0 l 0 ${r * 0.8} l ${-r * 0.8} 0 z`;
+        case 'class':
+          // Class box with line
+          return `M ${-r} ${-r} h ${r * 2} v ${r * 2} h ${-r * 2} z M ${-r} 0 h ${r * 2}`;
+        case 'method':
+          // Method (circle with dot)
+          return `M 0 0 m ${-r} 0 a ${r} ${r} 0 1 0 ${r * 2} 0 a ${r} ${r} 0 1 0 ${-r * 2} 0 M 0 0 m ${-r * 0.35} 0 a ${r * 0.35} ${r * 0.35} 0 1 0 ${r * 0.7} 0 a ${r * 0.35} ${r * 0.35} 0 1 0 ${-r * 0.7} 0`;
+        case 'variable':
+          // Variable equals sign
+          return `M ${-r} ${-r * 0.3} h ${r * 2} M ${-r} ${r * 0.3} h ${r * 2}`;
+        case 'interface':
+          // Interface (circle with dashed effect or i inside)
+          return `M 0 ${-r} m ${-r} 0 a ${r} ${r} 0 1 0 ${r * 2} 0 a ${r} ${r} 0 1 0 ${-r * 2} 0`;
+        case 'type':
+          // Type (T shape)
+          return `M ${-r} ${-r} h ${r * 2} v ${r * 0.5} h ${-r * 0.5} v ${r} h ${r * 0.5} v ${r * 0.5} h ${-r * 2} v ${-r * 0.5} h ${r * 0.5} v ${-r} h ${-r * 0.5} z`;
+        case 'module':
+          // Module (hexagon)
+          return `M ${r * 0.866} ${-r * 0.5} l ${-r * 0.866} ${-r * 0.5} l ${-r * 0.866} ${r * 0.5} l ${r * 0.866} ${r * 0.5} z`;
+        default:
+          // Default circle
+          return `M 0 ${-r} m ${-r} 0 a ${r} ${r} 0 1 0 ${r * 2} 0 a ${r} ${r} 0 1 0 ${-r * 2} 0`;
+      }
+    };
+
+    // Render nodes as paths with shapes
+    const nodeSelection = graphGroup.selectAll<SVGPathElement, CodeNode>('.node')
       .data(nodes, d => d.id);
 
-    const nodeEnter = nodeSelection.enter().append('circle')
+    const nodeEnter = nodeSelection.enter().append('path')
       .attr('class', 'node')
-      .attr('r', 8)
+      .attr('d', d => getNodeShape(d.type))
       .attr('fill', d => {
         const colors: Record<string, string> = {
           file: '#3b82f6',
@@ -182,7 +222,7 @@ export const VisualizationCanvas: React.FC<Props> = ({
       });
 
     // Drag behavior
-    const drag = d3.drag<SVGCircleElement, CodeNode>()
+    const drag = d3.drag<SVGPathElement, CodeNode>()
       .on('start', (event, d) => {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -192,7 +232,7 @@ export const VisualizationCanvas: React.FC<Props> = ({
         d.fx = event.x;
         d.fy = event.y;
       })
-      .on('end', (event, d) => {
+ .on('end', (event, d) => {
         if (!event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
@@ -211,8 +251,7 @@ export const VisualizationCanvas: React.FC<Props> = ({
         .attr('y2', d => d.target.y!);
 
       allNodes
-        .attr('cx', d => d.x!)
-        .attr('cy', d => d.y!);
+        .attr('transform', d => `translate(${d.x!},${d.y!})`);
     });
 
     // Cleanup

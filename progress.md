@@ -11,7 +11,7 @@
 - **Star Count:** 0
 - **Phase:** 1 - Core Visualization Engine
 - **Last Update:** 2026-05-10
-- **Next Milestone:** Add zoom/pan controls and basic node icons
+- **Next Milestone:** File system walker with glob patterns
 
 ---
 
@@ -23,10 +23,10 @@
 - [x] Zustand store for state management
 - [x] Implement D3.js force simulation
 - [x] Render nodes as interactive SVG elements
-- [ ] Add zoom/pan controls (mouse wheel, drag)
+- [x] Add zoom/pan controls (mouse wheel, drag)
 - [x] Node selection & hover effects
 - [x] Edge rendering with arrowheads
-- [ ] Basic node icons by type
+- [x] Basic node icons by type
 
 **Deliverable:** Interactive graph that can display any set of nodes/edges
 
@@ -87,6 +87,8 @@
 |------|--------|---------|-------|
 | 2026-05-10 | 4c3a9c8 | Initial commit - project scaffold | 0 |
 | 2026-05-10 | ed38af6 | feat: D3 force simulation with interactive nodes | 0 |
+| 2026-05-10 | 45e20f6 | feat: add zoom and pan controls for visualization canvas | 0 |
+| 2026-05-10 | d1009e5 | Add basic node icons by type | 0 |
 
 ---
 
