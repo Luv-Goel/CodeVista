@@ -11,7 +11,7 @@
 - **Star Count:** 0
 - **Phase:** 2 - Code Parsing & Analysis
 - **Last Update:** 2026-05-10
-- **Next Milestone:** Extract imports/exports to create edges
+- **Next Milestone:** Compute basic metrics (LOC, complexity estimate)
 
 ---
 
@@ -41,7 +41,7 @@
 - [x] Language detection by extension
 - [x] AST parser for TypeScript/JavaScript (using @babel/parser)
 - [x] Build CodeNode tree with parent-child relationships
-- [ ] Extract imports/exports to create edges
+- [x] Extract imports/exports to create edges
 - [ ] Compute basic metrics (LOC, complexity estimate)
 - [ ] Cache parsed results in SQLite
 
@@ -96,6 +96,7 @@
 | 2026-05-10 | 117c2a6 | Add language detection by extension | 0 |
 | 2026-05-10 | 4166b72 | Add AST parser using @babel/parser | 0 |
 | 2026-05-10 | 1c75519 | Build CodeNode tree by parsing AST | 0 |
+| 2026-05-10 | 781f821 | Extract imports/exports to create edges | 0 |
 | 2026-05-10 | 117c2a6 | Add file system walker with glob pattern support | 0 |
 
 ---

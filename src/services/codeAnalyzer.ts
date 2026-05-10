@@ -92,9 +92,11 @@ export class CodeAnalyzer {
       }
 
       try {
-        const content = await fs.readFile(file.path, 'utf-8');
-        const { ast } = parseCode(content, file.path);
         const fileNode = fileNodeMap.get(file.path)!;
+        const content = await fs.readFile(file.path, 'utf-8');
+        const lineCount = content.split('\n').length;
+        fileNode.metrics = { loc: lineCount, complexity: 0 };
+        const { ast } = parseCode(content, file.path);
 
         for (const node of ast.body) {
           // Function declarations
@@ -107,6 +109,10 @@ export class CodeAnalyzer {
               path: file.path,
               language,
               lines: { start: node.loc!.start.line, end: node.loc!.end.line },
+              metrics: {
+                loc: node.loc!.end.line - node.loc!.start.line + 1,
+                complexity: 1,
+              },
             };
             nodes.push(symbolNode);
             edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
@@ -121,6 +127,10 @@ export class CodeAnalyzer {
               path: file.path,
               language,
               lines: { start: node.loc!.start.line, end: node.loc!.end.line },
+              metrics: {
+                loc: node.loc!.end.line - node.loc!.start.line + 1,
+                complexity: 1,
+              },
             };
             nodes.push(symbolNode);
             edges.push({ source: fileNode.id, target: symbolId, type: 'contains' });
