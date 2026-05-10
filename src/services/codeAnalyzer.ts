@@ -1,5 +1,5 @@
 import { CodeNode, GraphEdge, VisualGraph, ProjectInfo } from '../types';
-import path from 'path';
+import * as path from 'path';
 import { FileWalker } from './fileWalker';
 import * as fs from 'fs';
 import { parseCode } from './astParser';
