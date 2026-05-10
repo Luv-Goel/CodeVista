@@ -10,7 +10,7 @@
 - **Star Count:** 0
 - **Phase:** 1 - Core Visualization Engine
 - **Last Update:** 2026-05-10
-- **Next Milestone:** Basic node icons by type
+- **Next Milestone:** Edge selection highlighting
 
 ---
 
@@ -25,7 +25,7 @@
 - [x] Add zoom/pan controls (mouse wheel, drag)
 - [x] Node selection & hover effects
 - [x] Edge rendering with arrowheads
-- [ ] Basic node icons by type
+- [x] Basic node icons by type
 
 **Deliverable:** Interactive graph that can display any set of nodes/edges
 
@@ -84,6 +84,7 @@
 
 | Date | Commit | Summary | Stars |
 |------|--------|---------|-------|
+| 2026-05-10 | 14f2c9d | Fix build errors and add demo data for visualization | 0 |
 | 2026-05-10 | 4c3a9c8 | Initial commit - project scaffold | 0 |
 | 2026-05-10 | ed38af6 | feat: D3 force simulation with interactive nodes | 0 |
 | 2026-05-10 | 45e20f6 | feat: add zoom and pan controls for visualization canvas | 0 |
