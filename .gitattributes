@@ -1,0 +1,36 @@
+# Auto-detect text files and use LF line endings
+* text=auto eol=lf
+
+# Source code
+*.ts    text diff=typescript
+*.tsx   text diff=typescript
+*.js    text
+*.jsx   text
+*.css   text
+*.html  text
+*.json  text
+*.yaml  text
+*.yml   text
+*.md    text
+*.sh    text eol=lf
+
+# Binary files
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.svg   binary
+*.woff  binary
+*.woff2 binary
+*.eot   binary
+*.ttf   binary
+*.db    binary
+*.sqlite binary
+
+# Git files
+.gitattributes export-ignore
+.gitignore     export-ignore
+
+# Linguist overrides for GitHub language detection
+.prettierrc linguist-language=JSON
