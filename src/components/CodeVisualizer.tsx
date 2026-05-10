@@ -21,7 +21,7 @@ export const CodeVisualizer: React.FC = () => {
         ) : (
           <div className="placeholder">
             <h2>🚧 Under Construction</h2>
-            <p>The visualization engine is being built by our AI assistant.</p>
+            <p>The visualization engine is under active development.</p>
             <p>Check back soon!</p>
             <div className="progress-indicator">
               <div className="spinner"></div>

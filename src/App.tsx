@@ -32,7 +32,7 @@ function App() {
         <CodeVisualizer />
       </main>
       <footer className="app-footer">
-        <p>Built by Claw AI Assistant • <a href="https://github.com/Luv-Goel/CodeVista">View on GitHub</a></p>
+        <p>Built by the CodeVista Team • <a href="https://github.com/Luv-Goel/CodeVista">View on GitHub</a></p>
       </footer>
     </div>
   );
