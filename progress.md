@@ -1,7 +1,6 @@
 # CodeVista Development Progress
 
 **Started:** 2026-05-10
-**Agent:** Claw AI Assistant
 **Target:** 500 GitHub stars ⭐
 
 ---
@@ -9,9 +8,9 @@
 ## 📈 Current Status
 
 - **Star Count:** 0
-- **Phase:** 2 - Code Parsing & Analysis
+- **Phase:** 1 - Core Visualization Engine
 - **Last Update:** 2026-05-10
-- **Next Milestone:** Compute basic metrics (LOC, complexity estimate)
+- **Next Milestone:** Basic node icons by type
 
 ---
 
@@ -26,22 +25,18 @@
 - [x] Add zoom/pan controls (mouse wheel, drag)
 - [x] Node selection & hover effects
 - [x] Edge rendering with arrowheads
-- [x] Basic node icons by type
+- [ ] Basic node icons by type
 
 **Deliverable:** Interactive graph that can display any set of nodes/edges
 
 ---
 
 ### Phase 2: Code Parsing & Analysis
-- [x] File system walker with glob patterns
-  - [x] Create fileWalker service (src/services/fileWalker.ts)
-  - [x] Integrate fileWalker into CodeAnalyzer
-  - [ ] Add basic tests
-  - [x] Build and verify
-- [x] Language detection by extension
-- [x] AST parser for TypeScript/JavaScript (using @babel/parser)
-- [x] Build CodeNode tree with parent-child relationships
-- [x] Extract imports/exports to create edges
+- [ ] File system walker with glob patterns
+- [ ] Language detection by extension
+- [ ] AST parser for TypeScript/JavaScript (using @typescript-eslint/parser or tree-sitter)
+- [ ] Build CodeNode tree with parent-child relationships
+- [ ] Extract imports/exports to create edges
 - [ ] Compute basic metrics (LOC, complexity estimate)
 - [ ] Cache parsed results in SQLite
 
@@ -92,12 +87,6 @@
 | 2026-05-10 | 4c3a9c8 | Initial commit - project scaffold | 0 |
 | 2026-05-10 | ed38af6 | feat: D3 force simulation with interactive nodes | 0 |
 | 2026-05-10 | 45e20f6 | feat: add zoom and pan controls for visualization canvas | 0 |
-| 2026-05-10 | cab5844 | Add basic node icons by type | 0 |
-| 2026-05-10 | 117c2a6 | Add language detection by extension | 0 |
-| 2026-05-10 | 4166b72 | Add AST parser using @babel/parser | 0 |
-| 2026-05-10 | 1c75519 | Build CodeNode tree by parsing AST | 0 |
-| 2026-05-10 | 781f821 | Extract imports/exports to create edges | 0 |
-| 2026-05-10 | 117c2a6 | Add file system walker with glob pattern support | 0 |
 
 ---
 

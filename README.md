@@ -2,7 +2,7 @@
 
 > Transform your codebase into an interactive visual mind map that helps you understand, navigate, and refactor complex code structures.
 
-**Status:** 🚧 Under Active Development - Bot-powered building in progress!
+**Status:** 🚧 Under Active Development
 
 ---
 
@@ -24,9 +24,9 @@
 CodeVista is an AI-powered tool that converts your source code into a dynamic, interactive visual mind map. It uses natural language processing and code analysis to understand relationships between functions, classes, and modules, then renders them as an explorable visual graph.
 
 ### Key Features (Planned)
-- **Automatic Code Structure Detection** - AI analyzes codebase relationships
+- **Automatic Code Structure Detection** - Analyzes codebase relationships automatically
 - **Interactive Visual Navigation** - Click through mind map to jump to source files
-- **Smart Refactoring Suggestions** - AI identifies potential improvements
+- **Smart Refactoring Suggestions** - Identifies potential improvements
 - **Search & Filter** - Find specific functions, classes, or patterns
 - **Export & Share** - Generate shareable diagrams
 - **Real-time Updates** - Visualization updates as code changes
@@ -47,9 +47,9 @@ CodeVista is an AI-powered tool that converts your source code into a dynamic, i
 
 ## 🚀 Development Status
 
-This project is being built **automatically** by an AI assistant with periodic commits every 15 minutes. Each commit adds new features, improvements, or fixes.
+This project is under active development with frequent commits. Each commit adds new features, improvements, or fixes.
 
-**Automated Development Log:** See commit history for daily progress.
+**Development Log:** See commit history for recent progress.
 
 ---
 
@@ -81,4 +81,4 @@ MIT - Free for personal and commercial use
 
 ---
 
-**Built with ❤️ by Claw (AI Assistant) for Master Diablo**
+**Built with ❤️ by Luv Goel**
