@@ -1,84 +1,86 @@
-# CodeVista 🧭
+﻿# CodeVista ðŸ—ºï¸
 
-> Transform your codebase into an interactive visual mind map that helps you understand, navigate, and refactor complex code structures.
+<div align="center">
 
-**Status:** 🚧 Under Active Development
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)]()
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)]()
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)]()
+[![D3.js](https://img.shields.io/badge/D3.js-7-FF6B35?logo=d3dotjs)]()
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)]()
 
----
+**AI-powered code visualizer â€” transform any codebase into an interactive visual mind map.**
 
-## 📊 Project Progress
-
-| Milestone | Status | Target Stars |
-|-----------|--------|--------------|
-| Initial Setup | ✅ Complete | 0 → 50 |
-| Core Visualization | 🔄 In Progress | 50 → 200 |
-| AI Integration | ⏳ Planned | 200 → 500 |
-| Public Launch | ⏳ Planned | 500+ |
-
-**Current Stars:** [View on GitHub](https://github.com/Luv-Goel/CodeVista)
+</div>
 
 ---
 
-## ✨ What is CodeVista?
+## Overview
 
-CodeVista is an AI-powered tool that converts your source code into a dynamic, interactive visual mind map. It uses natural language processing and code analysis to understand relationships between functions, classes, and modules, then renders them as an explorable visual graph.
+CodeVista turns complex codebases into beautiful, interactive force-directed graphs. Explore your project's structure, understand dependencies, and discover patterns â€” all in your browser.
 
-### Key Features (Planned)
-- **Automatic Code Structure Detection** - Analyzes codebase relationships automatically
-- **Interactive Visual Navigation** - Click through mind map to jump to source files
-- **Smart Refactoring Suggestions** - Identifies potential improvements
-- **Search & Filter** - Find specific functions, classes, or patterns
-- **Export & Share** - Generate shareable diagrams
-- **Real-time Updates** - Visualization updates as code changes
+Built with React, TypeScript, D3.js, and powered by OpenRouter AI for intelligent code analysis.
 
----
+## Features
 
-## 🛠 Tech Stack
+- ðŸŽ¯ **Force-directed graph** â€” Interactive visualization of codebase structure
+- ðŸ–±ï¸ **Zoom & pan** â€” Smooth navigation through large code graphs
+- ðŸ” **Node selection** â€” Click to inspect any file or module
+- ðŸ·ï¸ **Smart icons** â€” Visual indicators for file types (components, utils, hooks, etc.)
+- ðŸ“ **File system walker** â€” Glob pattern support for any project structure
+- ðŸ¤– **AI analysis** â€” OpenRouter integration for intelligent code insights
+- ðŸ“Š **Real-time updates** â€” State management with Zustand
+- ðŸŽ¨ **Beautiful UI** â€” Modern React with TypeScript type safety
+
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React, D3.js, TypeScript |
-| Backend | Node.js, Express |
-| Database | SQLite (caching) |
-| AI/ML | OpenAI API / Local alternatives |
-| Build | Vite, ESLint, Prettier, TypeScript |
+| Frontend | React 18, TypeScript 5 |
+| Visualization | D3.js (force simulation) |
+| Build | Vite 6 |
+| State | Zustand |
+| AI | OpenRouter API |
+| Styling | CSS Modules |
 
----
-
-## 🚀 Development Status
-
-This project is under active development with frequent commits. Each commit adds new features, improvements, or fixes.
-
-**Development Log:** See commit history for recent progress.
-
----
-
-## 📦 Getting Started (Once Complete)
+## Quick Start
 
 ```bash
+# Clone and install
 git clone https://github.com/Luv-Goel/CodeVista.git
 cd CodeVista
 npm install
-cp .env.example .env
-# Add your OpenAI API key
+
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
 ```
 
----
+## Project Structure
 
-## 🤝 Contributing
+```
+CodeVista/
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ components/     # React components
+â”‚   â”œâ”€â”€ store/          # Zustand state management
+â”‚   â”œâ”€â”€ utils/          # Utility functions
+â”‚   â”œâ”€â”€ hooks/          # Custom React hooks
+â”‚   â”œâ”€â”€ App.tsx         # Main application
+â”‚   â””â”€â”€ main.tsx        # Entry point
+â”œâ”€â”€ public/
+â”œâ”€â”€ index.html
+â”œâ”€â”€ package.json
+â””â”€â”€ vite.config.ts
+```
 
-We welcome contributions! This project is being built publicly. Feel free to:
-- Open issues for bugs or feature requests
-- Submit pull requests with improvements
-- Star the repo to show support ⭐
+## Usage
 
----
+1. **Start the app** â€” `npm run dev` opens the visualizer
+2. **Point to a codebase** â€” Enter a local path or GitHub URL
+3. **Explore the graph** â€” Pan, zoom, click nodes to inspect
+4. **AI insights** â€” Let AI analyze code patterns and dependencies
 
-## 📄 License
+## License
 
-MIT - Free for personal and commercial use
-
----
-
-**Built with ❤️ by Luv Goel**
+MIT
