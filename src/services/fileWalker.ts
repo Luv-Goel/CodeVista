@@ -6,6 +6,7 @@ export interface FileInfo {
   path: string;
   relativePath: string;
   size: number;
+  mtimeMs: number;
   isDirectory: boolean;
   extension?: string;
   depth: number;
@@ -76,6 +77,7 @@ export class FileWalker {
                 path: fullPath,
                 relativePath,
                 size: stats.size,
+                mtimeMs: stats.mtimeMs,
                 isDirectory: false,
                 extension: path.extname(entry.name).toLowerCase().slice(1) || undefined,
                 depth: currentDepth,

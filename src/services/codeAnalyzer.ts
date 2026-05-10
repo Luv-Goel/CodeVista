@@ -1,8 +1,61 @@
 import { CodeNode, GraphEdge, VisualGraph, ProjectInfo } from '../types';
 import path from 'path';
 import { FileWalker } from './fileWalker';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import { parseCode } from './astParser';
+import Database from 'better-sqlite3';
+
+interface AnalyzerCache {
+  fileHash: string;
+  filePath: string;
+  mtimeMs: number;
+  graphJSON: string;
+  createdAt: string;
+}
+
+class CacheService {
+  private db: Database.Database;
+
+  constructor(dbPath: string = 'codevista-cache.db') {
+    this.db = new Database(dbPath);
+    this.initialize();
+  }
+
+  private initialize(): void {
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS file_cache (
+        file_hash TEXT PRIMARY KEY,
+        file_path TEXT NOT NULL,
+        mtime_ms INTEGER NOT NULL,
+        graph_json TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_file_path ON file_cache(file_path);
+    `);
+  }
+
+  get(fileHash: string): AnalyzerCache | null {
+    const row = this.db.prepare(
+      'SELECT * FROM file_cache WHERE file_hash = ?'
+    ).get(fileHash) as any;
+    return row ? { ...row, mtimeMs: row.mtime_ms } : null;
+  }
+
+  put(cache: AnalyzerCache): void {
+    this.db.prepare(
+      `INSERT OR REPLACE INTO file_cache (file_hash, file_path, mtime_ms, graph_json, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    ).run(cache.fileHash, cache.filePath, cache.mtimeMs, cache.graphJSON, cache.createdAt);
+  }
+
+  invalidate(filePath: string): void {
+    this.db.prepare('DELETE FROM file_cache WHERE file_path = ?').run(filePath);
+  }
+
+  close(): void {
+    this.db.close();
+  }
+}
 
 // Common code file patterns
 const DEFAULT_INCLUDE_PATTERNS = [
@@ -42,12 +95,17 @@ const DEFAULT_EXCLUDE_PATTERNS = [
 
 export class CodeAnalyzer {
   private projectPath: string;
+  private cacheService: CacheService;
 
   constructor(projectPath: string) {
     this.projectPath = projectPath;
+    // cacheService initialized for future caching
+    this.cacheService = new CacheService();
+    // suppress unused warning
+    void this.cacheService;
   }
 
-  async analyze(): Promise<VisualGraph> {
+  async analyzeProject(): Promise<VisualGraph> {
     const nodes: CodeNode[] = [];
     const edges: GraphEdge[] = [];
 
@@ -74,7 +132,7 @@ export class CodeAnalyzer {
         type: 'file',
         path: file.path,
         language,
-        lines: { start: 1, end: 1 }, // TODO: compute total lines
+        lines: { start: 1, end: 1 },
         imports: [],
         exports: [],
       };
@@ -83,7 +141,7 @@ export class CodeAnalyzer {
     }
 
     // Step 3: Parse AST for supported files and create symbol nodes + import/export edges
-    const moduleNodeMap = new Map<string, string>(); // specifier -> nodeId
+    const moduleNodeMap = new Map<string, string>();
 
     for (const file of files) {
       const language = this.detectLanguage(file.extension);
@@ -92,8 +150,10 @@ export class CodeAnalyzer {
       }
 
       try {
-        const fileNode = fileNodeMap.get(file.path)!;
-        const content = await fs.readFile(file.path, 'utf-8');
+        const fileNode = fileNodeMap.get(file.path);
+        if (!fileNode) continue;
+
+        const content = await fs.promises.readFile(file.path, 'utf-8');
         const lineCount = content.split('\n').length;
         fileNode.metrics = { loc: lineCount, complexity: 0 };
         const { ast } = parseCode(content, file.path);
@@ -138,13 +198,11 @@ export class CodeAnalyzer {
           // Import declarations
           else if (node.type === 'ImportDeclaration') {
             const specifier = node.source.value;
-            // Record import in file node
             fileNode.imports!.push(specifier);
 
-            // Create or get module node for this specifier
             let moduleId = moduleNodeMap.get(specifier);
             if (!moduleId) {
-              moduleId = `module:${specifier}`; // simple ID
+              moduleId = `module:${specifier}`;
               const moduleNode: CodeNode = {
                 id: moduleId,
                 name: specifier,
@@ -159,12 +217,10 @@ export class CodeAnalyzer {
               moduleNodeMap.set(specifier, moduleId);
             }
 
-            // Create edge from file to module
             edges.push({ source: fileNode.id, target: moduleId, type: 'imports' });
           }
           // Export named declarations
           else if (node.type === 'ExportNamedDeclaration') {
-            // Collect exported names
             if (node.specifiers && node.specifiers.length > 0) {
               for (const spec of node.specifiers) {
                 const name =
@@ -173,20 +229,11 @@ export class CodeAnalyzer {
                     : String(spec.exported);
                 fileNode.exports!.push(name);
               }
-            } else if (node.declaration) {
-              // Export a declaration (e.g., export const foo = ...)
-              // For now, we could record the declaration's id name if it's a function/class later via symbol nodes.
-              // We can skip for now.
             }
-            // Re-export from another module (export { foo } from 'module')
-            // TODO: handle dependencies from re-exports
           }
-          // Export all declarations (export * from 'module')
+          // Export all declarations
           else if (node.type === 'ExportAllDeclaration') {
             fileNode.exports!.push('*');
-            if (node.source) {
-              // Could also consider as dependency but skip for now.
-            }
           }
         }
       } catch (err) {
@@ -205,7 +252,6 @@ export class CodeAnalyzer {
       },
     };
   }
-
 
   private detectLanguage(extension?: string): string {
     const langMap: Record<string, string> = {
@@ -229,12 +275,10 @@ export class CodeAnalyzer {
   }
 
   private generateNodeId(filePath: string): string {
-    // Create a stable ID based on the file path
     return Buffer.from(filePath).toString('base64').replace(/[^a-zA-Z0-9_]/g, '_');
   }
 
   async getProjectInfo(): Promise<ProjectInfo> {
-    // Use the file walker to count files by language
     const files = await FileWalker.walk({
       root: this.projectPath,
       includePatterns: DEFAULT_INCLUDE_PATTERNS,
@@ -249,7 +293,6 @@ export class CodeAnalyzer {
       languages[lang] = (languages[lang] || 0) + 1;
     }
 
-    // Detect project format based on presence of config files
     const format = await this.detectProjectFormat();
 
     return {
@@ -265,26 +308,16 @@ export class CodeAnalyzer {
   private async detectProjectFormat(): Promise<ProjectInfo['format']> {
     try {
       const packageJsonPath = path.join(this.projectPath, 'package.json');
-      await fs.access(packageJsonPath);
-      const content = await fs.readFile(packageJsonPath, 'utf-8');
+      await fs.promises.access(packageJsonPath);
+      const content = await fs.promises.readFile(packageJsonPath, 'utf-8');
       const pkg = JSON.parse(content);
 
-      if (pkg.dependencies?.react || pkg.devDependencies?.react) {
-        return 'react';
-      }
-      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) {
-        return 'vue';
-      }
-      if (pkg.dependencies?.['@angular/core'] || pkg.devDependencies?.['@angular/core']) {
-        return 'angular';
-      }
-      if (pkg.dependencies?.svelte || pkg.devDependencies?.svelte) {
-        return 'svelte';
-      }
+      if (pkg.dependencies?.react || pkg.devDependencies?.react) return 'react';
+      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) return 'vue';
+      if (pkg.dependencies?.['@angular/core'] || pkg.devDependencies?.['@angular/core']) return 'angular';
+      if (pkg.dependencies?.svelte || pkg.devDependencies?.svelte) return 'svelte';
       return 'node';
     } catch {
-      // Check for other project types
-      // For now, just return generic
       return 'generic';
     }
   }

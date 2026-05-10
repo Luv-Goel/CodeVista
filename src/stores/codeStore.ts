@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { VisualGraph, ViewState, ProjectInfo, AIAnalysis } from '../types';
+import { VisualGraph, ViewState, ProjectInfo, AIAnalysis, CodeNode, GraphEdge } from '../types';
 
 interface CodeStore {
   // State
@@ -73,16 +73,45 @@ export const useCodeStore = create<CodeStore>((set) => ({
     set({ isLoading: true, error: null });
 
     try {
-      // For now, initialize with placeholder state
-      // In the real app, this would load project configuration, scan for files, etc.
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulated delay
+      // Initialize with sample demo data for showcasing the visualizer
+      const sampleNodes: CodeNode[] = [
+        { id: 'file:main', name: 'main.ts', type: 'file', path: '/src/main.ts', language: 'typescript', lines: { start: 1, end: 50 } },
+        { id: 'file:app', name: 'App.tsx', type: 'file', path: '/src/App.tsx', language: 'typescript', lines: { start: 1, end: 80 } },
+        { id: 'file:store', name: 'codeStore.ts', type: 'file', path: '/src/stores/codeStore.ts', language: 'typescript', lines: { start: 1, end: 120 } },
+        { id: 'func:main', name: 'main()', type: 'function', path: '/src/main.ts', language: 'typescript', lines: { start: 5, end: 15 }, metrics: { complexity: 1, loc: 11 } },
+        { id: 'func:render', name: 'render()', type: 'function', path: '/src/App.tsx', language: 'typescript', lines: { start: 20, end: 35 }, metrics: { complexity: 1, loc: 16 } },
+        { id: 'class:store', name: 'CodeStore', type: 'class', path: '/src/stores/codeStore.ts', language: 'typescript', lines: { start: 10, end: 100 }, metrics: { complexity: 3, loc: 91 } },
+        { id: 'method:select', name: 'selectNode()', type: 'method', path: '/src/stores/codeStore.ts', language: 'typescript', lines: { start: 30, end: 40 }, metrics: { complexity: 1, loc: 11 } },
+        { id: 'method:zoom', name: 'updateZoom()', type: 'method', path: '/src/stores/codeStore.ts', language: 'typescript', lines: { start: 45, end: 52 }, metrics: { complexity: 1, loc: 8 } },
+        { id: 'interface:props', name: 'Props', type: 'interface', path: '/src/types/index.ts', language: 'typescript', lines: { start: 1, end: 20 }, metrics: { complexity: 1, loc: 20 } },
+        { id: 'type:node', name: 'CodeNode', type: 'type', path: '/src/types/index.ts', language: 'typescript', lines: { start: 22, end: 45 }, metrics: { complexity: 1, loc: 24 } },
+        { id: 'folder:src', name: 'src/', type: 'folder', path: '/src', language: undefined, lines: { start: 1, end: 500 } },
+        { id: 'module:react', name: 'react', type: 'module', path: 'react', language: 'javascript', lines: { start: 0, end: 0 } },
+      ];
+
+      const sampleEdges: GraphEdge[] = [
+        { source: 'file:main', target: 'func:main', type: 'contains' },
+        { source: 'file:app', target: 'func:render', type: 'contains' },
+        { source: 'file:app', target: 'interface:props', type: 'references' },
+        { source: 'file:store', target: 'class:store', type: 'contains' },
+        { source: 'class:store', target: 'method:select', type: 'contains' },
+        { source: 'class:store', target: 'method:zoom', type: 'contains' },
+        { source: 'file:store', target: 'type:node', type: 'contains' },
+        { source: 'file:app', target: 'file:store', type: 'imports' },
+        { source: 'file:store', target: 'file:main', type: 'imports' },
+        { source: 'file:app', target: 'module:react', type: 'imports' },
+        { source: 'file:store', target: 'module:react', type: 'imports' },
+        { source: 'folder:src', target: 'file:main', type: 'contains' },
+        { source: 'folder:src', target: 'file:app', type: 'contains' },
+        { source: 'folder:src', target: 'file:store', type: 'contains' },
+      ];
 
       const placeholderGraph: VisualGraph = {
-        nodes: [],
-        edges: [],
+        nodes: sampleNodes,
+        edges: sampleEdges,
         metadata: {
-          projectName: 'CodeVista',
-          totalFiles: 0,
+          projectName: 'CodeVista Demo',
+          totalFiles: sampleNodes.filter(n => n.type === 'file').length,
           analyzedAt: new Date().toISOString(),
           analyzerVersion: '0.0.1',
         },
@@ -91,11 +120,11 @@ export const useCodeStore = create<CodeStore>((set) => ({
       set({
         graph: placeholderGraph,
         projectInfo: {
-          name: 'CodeVista',
+          name: 'CodeVista Demo',
           format: 'react',
           path: '',
-          languages: {},
-          totalFiles: 0,
+          languages: { typescript: 3 },
+          totalFiles: 3,
           lastAnalyzed: new Date().toISOString(),
         },
         isLoading: false,
