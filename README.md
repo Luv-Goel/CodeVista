@@ -16,7 +16,40 @@
 
 **AI-powered code visualizer — transform any codebase into an interactive visual mind map.**
 
+CodeVista parses your project's AST (Abstract Syntax Tree), extracts import/dependency relationships, and renders them as a real-time force-directed graph using D3.js. An integrated AI layer (via OpenRouter) provides intelligent code pattern analysis on top of the graph.
+
 </div>
+
+---
+
+## How It Works
+
+```
+  Your Codebase
+       │
+       ▼
+  ┌───────────────┐
+  │  AST Parser      │  ←─ @babel/parser (JS/TS/JSX/TSX)
+  │  + File Walker   │  ←─ glob pattern traversal
+  └───────┬───────┘
+           │
+           ▼
+  ┌───────────────┐
+  │  Graph Builder   │  ←─ nodes = files/modules, edges = imports
+  └───────┬───────┘
+           │
+     ┌────┴────┐
+     ▼          ▼
+  ┌────────┐  ┌───────────┐
+  │ D3.js    │  │ AI Service │  ←─ OpenRouter API
+  │ Force    │  │ (insights) │
+  │ Graph    │  └───────────┘
+  └────────┘
+       │
+       ▼
+  Interactive Visual
+  (zoom, pan, click-to-inspect)
+```
 
 ---
 
@@ -53,46 +86,10 @@
 
 ---
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CodeVista System                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐   │
-│  │  React UI     │    │  D3.js       │    │  State (Zustand) │   │
-│  │  ┌──────────┐ │    │  ┌────────┐  │    │  ┌────────────┐  │   │
-│  │  │ App.tsx   │─┼────┼─▶│ Force  │  │    │  │ codeStore  │  │   │
-│  │  ├──────────┤ │    │  │ Sim.   │  │    │  ├────────────┤  │   │
-│  │  │ CodeVis. │─┼────┼─▶│ Zoom   │  │    │  │ VisualGraph│  │   │
-│  │  ├──────────┤ │    │  │ Pan    │  │    │  │ ViewState  │  │   │
-│  │  │ Control  │─┼────┼─▶│ Brush  │  │    │  │ AIAnalysis │  │   │
-│  │  │ Panel    │ │    │  └────────┘  │    │  └────────────┘  │   │
-│  │  └──────────┘ │    └──────────────┘    └──────────────────┘   │
-│  └──────────────┘                                                 │
-│         │                                                         │
-│         ▼                                                         │
-│  ┌──────────────────────────────────────────────┐                │
-│  │              Services Layer                    │                │
-│  │  ┌───────────┐  ┌───────────┐  ┌──────────┐  │                │
-│  │  │ AST       │  │ File      │  │ AI       │  │                │
-│  │  │ Parser    │  │ Walker    │  │ Service  │  │                │
-│  │  │ (@babel)  │  │ (glob)    │  │ (OpenR.) │  │                │
-│  │  └───────────┘  └───────────┘  └──────────┘  │                │
-│  └──────────────────────────────────────────────┘                │
-│                                                                   │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  Output: Force-directed graph ▲  Node inspection panel    │    │
-│  │          Zoom/Pan controls    │  Real-time state updates   │    │
-│  └──────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-```
-
 ## Features
 
 - 🎯 **Force-directed graph** — Interactive D3.js visualization of codebase structure
-- 🖱️ **Zoom & pan** — Smooth navigation through large code graphs
+- 🖥️ **Zoom & pan** — Smooth navigation through large code graphs
 - 🔍 **Node selection** — Click to inspect any file or module
 - 🏷️ **Smart icons** — Visual indicators for file types (components, utils, hooks, etc.)
 - 📁 **File system walker** — Glob pattern support for any project structure
