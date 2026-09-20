@@ -291,18 +291,18 @@ export const VisualizationCanvas: React.FC<Props> = ({
         >
           <polygon points="0 0, 10 3.5, 0 7" fill="#475569" />
         </marker>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" strokeWidth="0.5"/>
+        </pattern>
       </defs>
+
+      {/* Grid background */}
+      <rect width="100%" height="100%" fill="url(#grid)" />
 
       <g
         id="graph-layer"
         transform={`translate(${viewState.pan.x}, ${viewState.pan.y}) scale(${viewState.zoom})`}
       />
-
-      {/* Grid background */}
-      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" strokeWidth="0.5"/>
-      </pattern>
-      <rect width="100%" height="100%" fill="url(#grid)" />
     </svg>
   );
 };

@@ -11,12 +11,12 @@
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)]()
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)]()
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)]()
-[![GitHub Stars](https://img.shields.io/github/stars/Luv-Goel/CodeVista?style=social)]()
 
-**AI-powered code visualizer — transform any codebase into an interactive visual mind map.**
+**✨ AI-powered code visualizer ✨**
 
-CodeVista parses your project's AST (Abstract Syntax Tree), extracts import/dependency relationships, and renders them as a real-time force-directed graph using D3.js. An integrated AI layer (via OpenRouter) provides intelligent code pattern analysis on top of the graph.
+Transform any codebase into a stunning, interactive visual mind map. CodeVista parses your project's AST (Abstract Syntax Tree), extracts dependencies, and renders them as a real-time force-directed graph using D3.js. 
+
+Integrated with an AI layer to provide intelligent code pattern analysis on top of the graph! 🚀
 
 </div>
 
