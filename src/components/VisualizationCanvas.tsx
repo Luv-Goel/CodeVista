@@ -55,8 +55,9 @@ export const VisualizationCanvas: React.FC<Props> = ({
 
   // Handle mouse down for panning
   const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
-    // Only start panning if clicking on the SVG background (not on nodes)
-    if ((e.target as SVGElement).tagName === 'svg') {
+    // Only start panning if clicking on the SVG background or grid
+    const target = e.target as SVGElement;
+    if (target.tagName === 'svg' || target.tagName === 'rect') {
       setIsPanning(true);
       setPanStart({ x: e.clientX, y: e.clientY });
     }
@@ -80,7 +81,6 @@ export const VisualizationCanvas: React.FC<Props> = ({
 
   useEffect(() => {
     if (!svgRef.current) return;
-    if (viewState.layout !== 'force') return;
 
     const svg = d3.select(svgRef.current);
     const graphGroup = svg.select<SVGGElement>('#graph-layer');
@@ -116,12 +116,24 @@ export const VisualizationCanvas: React.FC<Props> = ({
       })
       .filter((e): e is GraphEdge & { source: CodeNode; target: CodeNode } => e !== null);
 
-    // Create simulation
-    const simulation = d3.forceSimulation<CodeNode>(nodes)
+    // Create simulation based on layout type
+    let simulation = d3.forceSimulation<CodeNode>(nodes)
       .force('link', d3.forceLink<CodeNode, GraphEdge>(resolvedEdges).id(d => d.id).distance(100))
       .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(400, 300))
       .force('collide', d3.forceCollide().radius(25));
+
+    if (viewState.layout === 'force') {
+      simulation.force('center', d3.forceCenter(400, 300));
+    } else if (viewState.layout === 'radial') {
+      simulation.force('radial', d3.forceRadial(200, 400, 300).strength(0.8));
+    } else if (viewState.layout === 'tree' || viewState.layout === 'hierarchical') {
+      simulation
+        .force('y', d3.forceY(d => {
+          // Simple heuristic: nodes with more links go higher (just a visual approximation)
+          return 100 + (Math.random() * 400); 
+        }).strength(0.1))
+        .force('x', d3.forceX(400).strength(0.05));
+    }
 
     simulationRef.current = simulation;
 
@@ -262,7 +274,8 @@ export const VisualizationCanvas: React.FC<Props> = ({
   }, [graph, viewState.layout, onNodeSelect, onNodeHover]);
 
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (e.target === svgRef.current) {
+    const target = e.target as SVGElement;
+    if (target === svgRef.current || target.tagName === 'rect') {
       onNodeSelect(undefined);
     }
   };
