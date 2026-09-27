@@ -46,13 +46,14 @@ The core of CodeVista operates in three distinct phases:
 ```mermaid
 flowchart TD
     A[Your Codebase] --> B(AST Parser & File Walker)
-    B -->|@babel/parser| C{Graph Builder}
+    B -->|babel parser| C{Graph Builder}
     C -->|Nodes & Edges| D[D3.js Force Graph]
-    D <-->|Insights| E[AI Service API]
+    D -->|Request| E[AI Service API]
+    E -->|Insights| D
     D --> F((Interactive Visual))
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
+    style D fill:#bbf,stroke:#f66,stroke-width:2px,color:#fff
     style F fill:#9f9,stroke:#333,stroke-width:4px
 ```
 
