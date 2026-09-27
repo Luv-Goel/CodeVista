@@ -16,6 +16,8 @@
 
 [Visit the Live Demo on GitHub Pages](https://Luv-Goel.github.io/CodeVista/)
 
+![CodeVista UI](docs/codevista_screenshot.jpg)
+
 Transform any codebase into a stunning, interactive visual mind map. CodeVista parses your project's AST (Abstract Syntax Tree), extracts dependencies, and renders them as a real-time force-directed graph using D3.js. 
 
 Integrated with an AI layer to provide intelligent code pattern analysis on top of the graph! 🚀
@@ -228,4 +230,5 @@ MIT — see [LICENSE](LICENSE).
 <div align="center">
   <sub>Built by the CodeVista Team</sub>
 </div>
+
 
