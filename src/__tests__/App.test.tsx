@@ -56,6 +56,7 @@ describe('App Component', () => {
   test('displays loading screen while initializing', () => {
     // Don't resolve the initialize promise so loading persists
     const mockInitialize = jest.fn(() => new Promise(() => {}));
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     (require('../stores/codeStore').useCodeStore as jest.Mock).mockReturnValue({
       initialize: mockInitialize,
     });

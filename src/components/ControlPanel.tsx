@@ -42,6 +42,29 @@ export const ControlPanel: React.FC = () => {
       </div>
 
       <div className="panel-section">
+        <h3>Export</h3>
+        <button
+          className="secondary"
+          onClick={() => {
+            const svg = document.querySelector('svg');
+            if (svg) {
+              const svgData = new XMLSerializer().serializeToString(svg);
+              const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'codevista-graph.svg';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+          }}
+        >
+          Export as SVG
+        </button>
+      </div>
+
+      <div className="panel-section">
         <h3>Project</h3>
         <div className="project-stats">
           {graph && (

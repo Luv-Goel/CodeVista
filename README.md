@@ -12,7 +12,9 @@
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)]()
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-**✨ AI-powered code visualizer ✨**
+**? AI-powered code visualizer ?**
+
+[Visit the Live Demo on GitHub Pages](https://Luv-Goel.github.io/CodeVista/)
 
 Transform any codebase into a stunning, interactive visual mind map. CodeVista parses your project's AST (Abstract Syntax Tree), extracts dependencies, and renders them as a real-time force-directed graph using D3.js. 
 
@@ -226,3 +228,4 @@ MIT — see [LICENSE](LICENSE).
 <div align="center">
   <sub>Built by the CodeVista Team</sub>
 </div>
+
