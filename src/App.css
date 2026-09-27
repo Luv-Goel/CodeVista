@@ -53,3 +53,44 @@
 .app-footer a:hover {
   text-decoration: underline;
 }
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+.header-title h1 {
+  margin: 0;
+}
+.header-title p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+.header-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.nav-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+.nav-btn:hover {
+  background-color: #2563eb;
+}
+.nav-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: #38bdf8;
+}

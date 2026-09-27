@@ -117,7 +117,7 @@ export const VisualizationCanvas: React.FC<Props> = ({
       .filter((e): e is GraphEdge & { source: CodeNode; target: CodeNode } => e !== null);
 
     // Create simulation based on layout type
-    let simulation = d3.forceSimulation<CodeNode>(nodes)
+    const simulation = d3.forceSimulation<CodeNode>(nodes)
       .force('link', d3.forceLink<CodeNode, GraphEdge>(resolvedEdges).id(d => d.id).distance(100))
       .force('charge', d3.forceManyBody().strength(-300))
       .force('collide', d3.forceCollide().radius(25));
@@ -128,7 +128,7 @@ export const VisualizationCanvas: React.FC<Props> = ({
       simulation.force('radial', d3.forceRadial(200, 400, 300).strength(0.8));
     } else if (viewState.layout === 'tree' || viewState.layout === 'hierarchical') {
       simulation
-        .force('y', d3.forceY(d => {
+        .force('y', d3.forceY(() => {
           // Simple heuristic: nodes with more links go higher (just a visual approximation)
           return 100 + (Math.random() * 400); 
         }).strength(0.1))
@@ -319,3 +319,4 @@ export const VisualizationCanvas: React.FC<Props> = ({
     </svg>
   );
 };
+

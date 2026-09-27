@@ -26,7 +26,7 @@ describe('App Component', () => {
   test('renders app header after loading', async () => {
     render(<App />);
     await waitFor(() => {
-      expect(screen.getByText('🧭 CodeVista')).toBeInTheDocument();
+      expect(screen.getByText('✨ CodeVista')).toBeInTheDocument();
     });
   });
 
