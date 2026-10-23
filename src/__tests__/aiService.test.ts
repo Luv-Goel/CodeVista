@@ -42,4 +42,17 @@ describe('AIService', () => {
     const service = createAIService('test-key');
     expect(service).toBeInstanceOf(AIService);
   });
+
+  test('setApiKey enables analyzeNode after construction without key', async () => {
+    const service = new AIService();
+    expect(service.analyzeNode).toBeDefined();
+    service.setApiKey('test-key');
+    const suggestions = await service.analyzeNode({
+      id: 'file:main',
+      name: 'main.ts',
+      type: 'file',
+      path: '/src/main.ts',
+    });
+    expect(suggestions).toEqual([]);
+  });
 });

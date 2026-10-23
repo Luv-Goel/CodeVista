@@ -7,6 +7,10 @@ export class AIService {
     this.apiKey = apiKey;
   }
 
+  setApiKey(apiKey: string): void {
+    this.apiKey = apiKey;
+  }
+
   async analyzeNode(node: CodeNode): Promise<CodeSuggestion[]> {
     // Placeholder for AI analysis
     // Would send code context + metadata to AI (OpenRouter, local model, etc.)
